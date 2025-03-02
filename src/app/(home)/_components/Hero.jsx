@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import Link from "next/link";
 
 const Hero = () => {
   return (
@@ -20,9 +21,11 @@ const Hero = () => {
       </p>
 
       {/* Call to Action Button */}
-      <button className="mt-6 px-6 py-3 text-lg font-semibold bg-blue-500 hover:bg-blue-700 transition-all rounded-lg flex items-center gap-2">
-        Start Coding Here 🚀
-      </button>
+      <Link href="/dashboard">
+        <button className="mt-6 px-6 py-3 text-lg font-semibold bg-blue-500 hover:bg-blue-700 transition-all rounded-lg flex items-center gap-2">
+          Start Coding Here 🚀
+        </button>
+      </Link>
 
       {/* Image of Code Editor */}
       <div className="mt-10">

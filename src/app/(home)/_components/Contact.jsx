@@ -12,6 +12,14 @@ const GetInTouch = () => {
       email: "rudrakshi747.be22@chitkara.edu.in",
     },
     {
+      name: "Rudraksh Kapoor",
+      roll: "2210990746",
+      group: "G12",
+      github: "https://github.com/ItsRudraksh",
+      linkedin: "https://www.linkedin.com/in/rudraksh-kapoor/",
+      email: "rudraksh746.be22@chitkara.edu.in",
+    },
+    {
       name: "Sakshi Rana",
       roll: "2210990769",
       group: "G12",
@@ -30,14 +38,14 @@ const GetInTouch = () => {
   ];
 
   return (
-    <section className="py-20 bg-gray-900 text-white text-center px-6">
+    <section className="py-10 text-white text-center px-6">
       <h2 className="text-4xl font-bold text-white mb-6">Get in Touch</h2>
       <p className="text-lg text-gray-300 max-w-2xl mx-auto mb-12">
         Connect with the people behind Code Karo—dedicated, innovative, and
         ready to help you on your coding journey.
       </p>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+      <div className="grid grid-cols-2 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
         {teamMembers.map((member, index) => (
           <div
             key={index}

@@ -1,8 +1,11 @@
+"use client";
 import React from "react";
 import Link from "next/link";
 import { Blocks } from "lucide-react";
+import { UserButton, useUser } from "@clerk/nextjs";
 
 const Header = () => {
+  const { user } = useUser();
   return (
     <header className="bg-[#0a0a0f]/80 backdrop-blur-xl p-6 rounded-2xl shadow-lg mx-6 my-4">
       <div className="container mx-auto flex items-center justify-between">
@@ -53,9 +56,15 @@ const Header = () => {
           </Link>
         </nav>
 
-        <button className="px-4 py-2 bg-blue-500 text-white rounded-xl hover:bg-blue-600">
-          Signup
-        </button>
+        {!user ? (
+          <Link href="/sign-in">
+            <button className="px-4 py-2 bg-blue-500 text-white rounded-xl hover:bg-blue-600">
+              Signup
+            </button>
+          </Link>
+        ) : (
+          <UserButton />
+        )}
       </div>
     </header>
   );

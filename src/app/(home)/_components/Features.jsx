@@ -62,7 +62,7 @@ const Features = () => {
   return (
     <section
       id="features"
-      className="py-20 bg-gray-900 text-white text-center px-6"
+      className="py-20 text-white text-center px-6"
     >
       <h2 className="text-4xl font-bold text-white mb-6">
         Amazing Features 🚀
