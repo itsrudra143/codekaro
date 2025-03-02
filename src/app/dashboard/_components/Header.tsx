@@ -1,6 +1,5 @@
-// import { currentUser } from "@clerk/nextjs/server";
-// import { ConvexHttpClient } from "convex/browser";
-// import { api } from "../../../../convex/_generated/api";
+"use client";
+// Remove Convex-related imports
 import Link from "next/link";
 import { Blocks, Code2 } from "lucide-react";
 import { SignedIn } from "@clerk/nextjs";
@@ -11,14 +10,9 @@ import HeaderProfileBtn from "./HeaderProfileBtn";
 
 import React from "react";
 
-async function Header() {
-  // const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
-  // const user = await currentUser();
-
-  // const convexUser = await convex.query(api.users.getUser, {
-  //   userId: user?.id || "",
-  // });
-
+function Header() {
+  // Remove Convex-related code
+  
   return (
     <div className="relative z-10">
       <div
