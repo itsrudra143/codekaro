@@ -72,7 +72,6 @@ const Features = () => {
         every keystroke sparks creativity and endless possibilities.
       </p>
 
-      {/* Flashcard Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
         {features.map((feature, index) => (
           <div
