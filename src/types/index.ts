@@ -56,7 +56,7 @@ export interface CodeEditorState {
 
 export interface Snippet {
   id: string;
-  createdAt: Date;
+  createdAt: string;
   userId: string;
   language: string;
   code: string;

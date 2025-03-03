@@ -1,15 +1,18 @@
 "use client";
 import { ClerkProvider } from "@clerk/nextjs";
 import React from "react";
+import { UserProvider } from "./UserProvider";
 
-function DatabaseProvider({ children }: { children: React.ReactNode }) {
+function ApiClientProvider({ children }: { children: React.ReactNode }) {
   return (
     <ClerkProvider
       publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY!}
     >
-      {children}
+      <UserProvider>
+        {children}
+      </UserProvider>
     </ClerkProvider>
   );
 }
 
-export default DatabaseProvider; 
+export default ApiClientProvider; 

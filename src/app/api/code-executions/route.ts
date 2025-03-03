@@ -1,47 +1,57 @@
-import { getExecutions, saveExecution } from '@/services/codeExecutions';
 import { NextRequest, NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
 import { auth } from '@clerk/nextjs/server';
 
-export async function GET(request: NextRequest) {
-  const res = auth();
-  const userId = (await res).userId;
-  
-  if (!userId) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
-
+// GET /api/code-executions - Get all code executions for the current user
+export async function GET(req: NextRequest) {
   try {
-    const url = new URL(request.url);
-    const limit = parseInt(url.searchParams.get('limit') || '10');
-    const cursor = url.searchParams.get('cursor') || undefined;
+    const { userId } = await auth();
+    
+    if (!userId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
 
-    const executions = await getExecutions(userId, limit, cursor);
-    return NextResponse.json(executions);
+    const codeExecutions = await prisma.codeExecution.findMany({
+      where: { userId },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    return NextResponse.json(codeExecutions);
   } catch (error) {
-    console.error('Error fetching executions:', error);
-    return NextResponse.json({ error: 'Failed to fetch executions' }, { status: 500 });
+    console.error('Error fetching code executions:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
 
-export async function POST(request: NextRequest) {
-  const res = auth();
-  const userId = (await res).userId;
-  
-  if (!userId) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
-
+// POST /api/code-executions - Create a new code execution
+export async function POST(req: NextRequest) {
   try {
-    const { language, code, output, error } = await request.json();
+    const { userId } = await auth();
     
+    if (!userId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const body = await req.json();
+    const { language, code, output, error } = body;
+
     if (!language || !code) {
       return NextResponse.json({ error: 'Language and code are required' }, { status: 400 });
     }
 
-    const execution = await saveExecution(userId, language, code, output, error);
-    return NextResponse.json(execution);
+    const codeExecution = await prisma.codeExecution.create({
+      data: {
+        userId,
+        language,
+        code,
+        output,
+        error,
+      },
+    });
+
+    return NextResponse.json(codeExecution);
   } catch (error) {
-    console.error('Error saving execution:', error);
-    return NextResponse.json({ error: 'Failed to save execution' }, { status: 500 });
+    console.error('Error creating code execution:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 } 

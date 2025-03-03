@@ -1,18 +1,13 @@
-"use client";
-// Remove Convex-related imports
 import Link from "next/link";
 import { Blocks, Code2 } from "lucide-react";
 import { SignedIn } from "@clerk/nextjs";
 import ThemeSelector from "./ThemeSelector";
-import LanguageSelector from "./LanguageSelector"; // Now fixed to JavaScript only
+import LanguageSelector from "./LanguageSelector";
 import RunButton from "./RunButton";
 import HeaderProfileBtn from "./HeaderProfileBtn";
-
 import React from "react";
 
-function Header() {
-  // Remove Convex-related code
-  
+async function Header() {
   return (
     <div className="relative z-10">
       <div
@@ -65,8 +60,7 @@ function Header() {
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-3">
             <ThemeSelector />
-            <LanguageSelector />{" "}
-            {/* No access check, only JavaScript is displayed */}
+            <LanguageSelector />
           </div>
         </div>
 
