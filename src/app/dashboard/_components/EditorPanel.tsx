@@ -4,6 +4,7 @@ import { useEffect } from "react";
 // import { useState } from "react";
 import { defineMonacoThemes, LANGUAGE_CONFIG } from "../_constants";
 import { Editor } from "@monaco-editor/react";
+import { editor as monacoEditor } from "monaco-editor";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { RotateCcwIcon, TypeIcon } from "lucide-react";
