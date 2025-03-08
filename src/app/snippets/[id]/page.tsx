@@ -4,7 +4,7 @@ import { useQuery } from "convex/react";
 import { useParams } from "next/navigation";
 import { api } from "../../../../convex/_generated/api";
 import { Id } from "../../../../convex/_generated/dataModel";
-import SnippetLoadingSkeleton from "./_components/SnippetLoadingSkeleton";
+import SnippetLoadingSkeleton from "../_components/SnippetsPageSkeleton";
 import NavigationHeader from "@/components/NavigationHeader";
 import { Clock, Code, MessageSquare, User } from "lucide-react";
 import { Editor } from "@monaco-editor/react";
@@ -12,9 +12,9 @@ import {
   defineMonacoThemes,
   LANGUAGE_CONFIG,
 } from "@/app/dashboard/_constants";
-import CopyButton from "@/app/snippets/[id]/_components/CopyButton";
-import Comments from "@/app/snippets/[id]/_components/Comments";
 import Image from "next/image";
+import CopyButton from "./_components/CopyButton";
+import Comments from "./_components/Comments";
 
 function SnippetDetailPage() {
   const snippetId = useParams().id;
@@ -40,11 +40,11 @@ function SnippetDetailPage() {
               <div className="flex items-center gap-4">
                 <div className="flex items-center justify-center size-12 rounded-xl bg-[#ffffff08] p-2.5">
                   <Image
+                    width={32}
+                    height={16}
                     src={`/${snippet.language}.png`}
                     alt={`${snippet.language} logo`}
-                    width={48}
-                    height={48}
-                    className="object-contain"
+                    className="w-full h-full object-contain"
                   />
                 </div>
                 <div>

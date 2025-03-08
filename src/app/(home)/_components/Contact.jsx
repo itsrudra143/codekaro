@@ -12,14 +12,6 @@ const GetInTouch = () => {
       email: "rudrakshi747.be22@chitkara.edu.in",
     },
     {
-      name: "Rudraksh Kapoor",
-      roll: "2210990746",
-      group: "G12",
-      github: "https://github.com/ItsRudraksh",
-      linkedin: "https://www.linkedin.com/in/rudraksh-kapoor/",
-      email: "rudraksh746.be22@chitkara.edu.in",
-    },
-    {
       name: "Sakshi Rana",
       roll: "2210990769",
       group: "G12",
@@ -32,7 +24,8 @@ const GetInTouch = () => {
       roll: "2210990772",
       group: "G12",
       github: "https://github.com/itssamar0401",
-      linkedin: "#",
+      linkedin:
+        "https://www.linkedin.com/in/samar-saini-6220b1354?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app",
       email: "samar772.be22@chitkara.edu.in",
     },
   ];
@@ -45,7 +38,7 @@ const GetInTouch = () => {
         ready to help you on your coding journey.
       </p>
 
-      <div className="grid grid-cols-2 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+      <div className="grid grid-cols-3 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
         {teamMembers.map((member, index) => (
           <div
             key={index}
