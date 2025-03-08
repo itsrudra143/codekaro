@@ -1,22 +1,22 @@
 "use client";
 import { useCodeEditorStore } from "@/store/useCodeEditorStore";
 import { useEffect } from "react";
-// import { useState } from "react";
+import { useState } from "react";
 import { defineMonacoThemes, LANGUAGE_CONFIG } from "../_constants";
 import { Editor } from "@monaco-editor/react";
-import { editor as monacoEditor } from "monaco-editor";
+// import { editor as monacoEditor } from "monaco-editor";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { RotateCcwIcon, TypeIcon } from "lucide-react";
-// import { ShareIcon } from "lucide-react";
+import { ShareIcon } from "lucide-react";
 import { useClerk } from "@clerk/nextjs";
 import { EditorPanelSkeleton } from "./EditorPanelSkeleton";
 import useMounted from "@/hooks/useMounted";
-// import ShareSnippetDialog from "./ShareSnippetDialog";
+import ShareSnippetDialog from "./ShareSnippetDialog";
 
 const EditorPanel = () => {
   const clerk = useClerk();
-  // const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
+  const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
   const { language, theme, fontSize, editor, setFontSize, setEditor } =
     useCodeEditorStore();
   const mounted = useMounted();
@@ -103,7 +103,7 @@ const EditorPanel = () => {
             </motion.button>
 
             {/* Share Button */}
-            {/* <motion.button
+            { <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => setIsShareDialogOpen(true)}
@@ -112,7 +112,7 @@ const EditorPanel = () => {
             >
               <ShareIcon className="size-4 text-white" />
               <span className="text-sm font-medium text-white ">Share</span>
-            </motion.button> */}
+            </motion.button> }
           </div>
         </div>
 
@@ -153,9 +153,9 @@ const EditorPanel = () => {
           {!clerk.loaded && <EditorPanelSkeleton />}
         </div>
       </div>
-      {/* {isShareDialogOpen && (
+      {isShareDialogOpen && (
         <ShareSnippetDialog onClose={() => setIsShareDialogOpen(false)} />
-      )} */}
+      )} 
     </div>
   );
 };
