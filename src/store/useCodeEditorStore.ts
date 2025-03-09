@@ -1,7 +1,7 @@
 import { CodeEditorState } from "../types/index";
 import { LANGUAGE_CONFIG } from "@/app/dashboard/_constants";
 import { create } from "zustand";
-import { Monaco } from "@monaco-editor/react";
+// import { Monaco } from "@monaco-editor/react";
 import { editor as monacoEditor } from "monaco-editor";
 
 const getInitialState = () => {
@@ -11,6 +11,7 @@ const getInitialState = () => {
       language: "javascript",
       fontSize: 16,
       theme: "vs-dark",
+      autoFormat: true,
     };
   }
 
@@ -23,6 +24,7 @@ const getInitialState = () => {
     language: savedLanguage,
     theme: savedTheme,
     fontSize: Number(savedFontSize),
+    autoFormat: true,
   };
 };
 
@@ -36,6 +38,8 @@ export const useCodeEditorStore = create<CodeEditorState>((set, get) => {
     error: null,
     editor: null,
     executionResult: null,
+    userInput: "",
+    showInputField: false,
 
     getCode: () => get().editor?.getValue() || "",
 
@@ -56,6 +60,14 @@ export const useCodeEditorStore = create<CodeEditorState>((set, get) => {
       set({ fontSize });
     },
 
+    setUserInput: (input: string) => {
+      set({ userInput: input });
+    },
+
+    toggleInputField: () => {
+      set((state) => ({ showInputField: !state.showInputField }));
+    },
+
     setLanguage: (language: string) => {
       // Save current language code before switching
       const currentCode = get().editor?.getValue();
@@ -73,12 +85,22 @@ export const useCodeEditorStore = create<CodeEditorState>((set, get) => {
     },
 
     runCode: async () => {
-      const { language, getCode } = get();
+      const { language, getCode, userInput, editor } = get();
       const code = getCode();
 
       if (!code) {
         set({ error: "Please enter some code" });
         return;
+      }
+
+      // Always format the code before running it
+      if (editor) {
+        try {
+          await editor.getAction("editor.action.formatDocument")?.run();
+        } catch (error) {
+          console.error("Error formatting code before running:", error);
+          // Continue with execution even if formatting fails
+        }
       }
 
       set({ isRunning: true, error: null, output: "" });
@@ -94,6 +116,7 @@ export const useCodeEditorStore = create<CodeEditorState>((set, get) => {
             language: runtime.language,
             version: runtime.version,
             files: [{ content: code }],
+            stdin: userInput,
           }),
         });
 
@@ -105,7 +128,12 @@ export const useCodeEditorStore = create<CodeEditorState>((set, get) => {
         if (data.message) {
           set({
             error: data.message,
-            executionResult: { code, output: "", error: data.message },
+            executionResult: {
+              code,
+              output: "",
+              error: data.message,
+              userInput,
+            },
           });
           return;
         }
@@ -119,6 +147,7 @@ export const useCodeEditorStore = create<CodeEditorState>((set, get) => {
               code,
               output: "",
               error,
+              userInput,
             },
           });
           return;
@@ -132,6 +161,7 @@ export const useCodeEditorStore = create<CodeEditorState>((set, get) => {
               code,
               output: "",
               error,
+              userInput,
             },
           });
           return;
@@ -147,13 +177,19 @@ export const useCodeEditorStore = create<CodeEditorState>((set, get) => {
             code,
             output: output.trim(),
             error: null,
+            userInput,
           },
         });
       } catch (error) {
         console.log("Error running code:", error);
         set({
           error: "Error running code",
-          executionResult: { code, output: "", error: "Error running code" },
+          executionResult: {
+            code,
+            output: "",
+            error: "Error running code",
+            userInput,
+          },
         });
       } finally {
         set({ isRunning: false });

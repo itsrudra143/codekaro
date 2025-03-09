@@ -1,4 +1,4 @@
-import { Monaco } from "@monaco-editor/react";
+// import { Monaco } from "@monaco-editor/react";
 import { editor as monacoEditor } from "monaco-editor";
 import { Id } from "../../convex/_generated/dataModel";
 
@@ -36,6 +36,7 @@ export interface ExecutionResult {
   code: string;
   output: string;
   error: string | null;
+  userInput?: string;
 }
 
 export interface CodeEditorState {
@@ -47,6 +48,9 @@ export interface CodeEditorState {
   fontSize: number;
   editor: monacoEditor.IStandaloneCodeEditor | null;
   executionResult: ExecutionResult | null;
+  userInput: string;
+  showInputField: boolean;
+  autoFormat: boolean;
 
   setEditor: (editor: monacoEditor.IStandaloneCodeEditor) => void;
   getCode: () => string;
@@ -54,6 +58,8 @@ export interface CodeEditorState {
   setTheme: (theme: string) => void;
   setFontSize: (fontSize: number) => void;
   runCode: () => Promise<void>;
+  setUserInput: (input: string) => void;
+  toggleInputField: () => void;
 }
 
 export interface Snippet {

@@ -7,12 +7,17 @@ import { Editor } from "@monaco-editor/react";
 // import { editor as monacoEditor } from "monaco-editor";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { RotateCcwIcon, TypeIcon } from "lucide-react";
-import { ShareIcon } from "lucide-react";
+import {
+  RotateCcwIcon,
+  TypeIcon,
+  ShareIcon,
+  AlignJustifyIcon,
+} from "lucide-react";
 import { useClerk } from "@clerk/nextjs";
 import { EditorPanelSkeleton } from "./EditorPanelSkeleton";
 import useMounted from "@/hooks/useMounted";
 import ShareSnippetDialog from "./ShareSnippetDialog";
+import { configureAutoFormatting } from "../_utils/formattingService";
 
 const EditorPanel = () => {
   const clerk = useClerk();
@@ -48,6 +53,23 @@ const EditorPanel = () => {
     localStorage.setItem("editor-font-size", size.toString());
   };
 
+  const handleFormatCode = () => {
+    if (editor) {
+      const formatAction = editor.getAction("editor.action.formatDocument");
+      if (formatAction) {
+        formatAction.run();
+      }
+    }
+  };
+
+  // Handle editor initialization
+  const handleEditorMount = (editorInstance: any, monaco: any) => {
+    setEditor(editorInstance);
+
+    // Configure auto-formatting on paste
+    configureAutoFormatting(editorInstance, monaco);
+  };
+
   if (!mounted) return null;
 
   return (
@@ -58,7 +80,7 @@ const EditorPanel = () => {
           <div className="flex items-center gap-3">
             <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-[#1e1e2e] ring-1 ring-white/5">
               <Image
-                src={"/" + language + ".png"}
+                src={LANGUAGE_CONFIG[language].logoPath}
                 alt="Logo"
                 width={24}
                 height={24}
@@ -72,10 +94,10 @@ const EditorPanel = () => {
             </div>
           </div>
           <div className="flex items-center gap-3">
-            {/* Font Size Slider */}
-            <div className="flex items-center gap-3 px-3 py-2 bg-[#1e1e2e] rounded-lg ring-1 ring-white/5">
+            {/* Font Size Controls */}
+            <div className="flex items-center gap-2 px-3 py-2 bg-[#1e1e2e] rounded-lg ring-1 ring-white/5">
               <TypeIcon className="size-4 text-gray-400" />
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
                 <input
                   type="range"
                   min="12"
@@ -92,6 +114,22 @@ const EditorPanel = () => {
               </div>
             </div>
 
+            {/* Format Button */}
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={handleFormatCode}
+              className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-800/50 text-gray-400 hover:text-white transition-colors group relative"
+              aria-label="Format code"
+            >
+              <AlignJustifyIcon className="size-4" />
+
+              {/* Keyboard shortcut tooltip */}
+              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-xs text-gray-300 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
+                Beautify (Shift+Alt+F)
+              </div>
+            </motion.button>
+
             <motion.button
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
@@ -103,16 +141,18 @@ const EditorPanel = () => {
             </motion.button>
 
             {/* Share Button */}
-            { <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={() => setIsShareDialogOpen(true)}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg overflow-hidden bg-gradient-to-r
+            {
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => setIsShareDialogOpen(true)}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg overflow-hidden bg-gradient-to-r
                from-blue-500 to-blue-600 opacity-90 hover:opacity-100 transition-opacity"
-            >
-              <ShareIcon className="size-4 text-white" />
-              <span className="text-sm font-medium text-white ">Share</span>
-            </motion.button> }
+              >
+                <ShareIcon className="size-4 text-white" />
+                <span className="text-sm font-medium text-white ">Share</span>
+              </motion.button>
+            }
           </div>
         </div>
 
@@ -125,7 +165,7 @@ const EditorPanel = () => {
               onChange={handleEditorChange}
               theme={theme}
               beforeMount={defineMonacoThemes}
-              onMount={(editor) => setEditor(editor)}
+              onMount={handleEditorMount}
               options={{
                 minimap: { enabled: false },
                 fontSize,
@@ -155,7 +195,7 @@ const EditorPanel = () => {
       </div>
       {isShareDialogOpen && (
         <ShareSnippetDialog onClose={() => setIsShareDialogOpen(false)} />
-      )} 
+      )}
     </div>
   );
 };

@@ -1,5 +1,6 @@
 import { Monaco } from "@monaco-editor/react";
 import { Theme } from "../../../types";
+import { registerFormattingProviders } from "../_utils/formattingService";
 
 type LanguageConfig = Record<
   string,
@@ -348,7 +349,7 @@ export const THEME_DEFINITONS = {
 export const defineMonacoThemes = (monaco: Monaco) => {
   Object.entries(THEME_DEFINITONS).forEach(([themeName, themeData]) => {
     monaco.editor.defineTheme(themeName, {
-      base: themeData.base,
+      base: themeData.base as any,
       inherit: themeData.inherit,
       rules: themeData.rules.map((rule) => ({
         ...rule,
@@ -357,4 +358,7 @@ export const defineMonacoThemes = (monaco: Monaco) => {
       colors: themeData.colors,
     });
   });
+
+  // Register formatting providers
+  registerFormattingProviders(monaco);
 };
