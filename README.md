@@ -1,36 +1,62 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 💻 Code Karo
 
-## Getting Started
+> 🚀 An interactive, multi-language **online code editor** with real-time execution, snippet sharing, profile analytics, and a beautiful developer experience.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+![Code Karo Banner](public/Code-editor.png) 
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## ✨ Key Features
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 🧠 Code Editor
+- 🛠️ Supports multiple programming languages (C++, Python, JavaScript, etc.)
+- 🎨 Switchable editor themes (light/dark + custom themes)
+- ⚙️ Real-time code execution via backend API integration
+- 💾 Auto-save and code history support (coming soon)
 
-## Learn More
+### 🔐 Authentication
+- 🔑 Login & Signup via [Clerk](https://clerk.dev)
+- 🔒 Secure session handling with role-based access
 
-To learn more about Next.js, take a look at the following resources:
+### 📤 Snippet Sharing
+- 📎 Share code snippets via public or private links
+- ⭐ Star and favorite your favorite snippets
+- 💬 Add and view comments on shared snippets
+- 🔍 Filter snippets by language, author, or name
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 👤 Profile Dashboard
+- 📊 Shows number of snippets created and starred
+- 🌐 Analytics of languages used in the last 24 hours
+- 🏆 Most used language and all-time execution history
+- 🧾 Clean and dynamic UI to view developer activity
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## ⚙️ Tech Stack
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+| Layer       | Tech Used                                 |
+|--------------|-------------------------------------------|
+| 🖥️ Frontend  | React.js, Tailwind CSS, Monaco Editor     |
+| 🔧 Backend   | Node.js, Express.js, REST APIs            |
+| 💽 Database  | MongoDB                                   |
+| 🔐 Auth      | Clerk                                     |
+| 🎨 UI Tools  | TailwindCSS, Custom Theme Configurations  |
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+
+## 🧑‍💻 Developed By
+
+**Your Name**  
+📧 rudrakshisharma86@gmail.com  
+🔗 [GitHub](https://github.com/itsrudra143) 
+
+---
+
+## 🏁 Getting Started
+
+1. Clone the repository  
+   ```bash
+   git clone https://github.com/itsrudra143/codekaro
