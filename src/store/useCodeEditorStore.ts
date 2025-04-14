@@ -1,7 +1,7 @@
 import { CodeEditorState } from "../types/index";
 import { LANGUAGE_CONFIG } from "@/app/dashboard/_constants";
 import { create } from "zustand";
-import { Monaco } from "@monaco-editor/react";
+import { editor as MonacoEditor } from "monaco-editor";
 
 const getInitialState = () => {
   // if we're on the server, return default values
@@ -35,13 +35,19 @@ export const useCodeEditorStore = create<CodeEditorState>((set, get) => {
     error: null,
     editor: null,
     executionResult: null,
+    userInput: "",
+    showInputField: false,
 
     getCode: () => get().editor?.getValue() || "",
 
-    setEditor: (editor: Monaco) => {
-      const savedCode = localStorage.getItem(`editor-code-${get().language}`);
-      if (savedCode) editor.setValue(savedCode);
-
+    setEditor: (editor: MonacoEditor.IStandaloneCodeEditor) => {
+      const currentLanguage = get().language;
+      const savedCode = localStorage.getItem(`editor-code-${currentLanguage}`);
+      if (editor && (!editor.getValue() || editor.getValue() !== savedCode)) {
+        const initialCode =
+          savedCode || LANGUAGE_CONFIG[currentLanguage]?.defaultCode || "";
+        editor.setValue(initialCode);
+      }
       set({ editor });
     },
 
@@ -71,7 +77,12 @@ export const useCodeEditorStore = create<CodeEditorState>((set, get) => {
       });
     },
 
-    runCode: async () => {
+    setUserInput: (input: string) => set({ userInput: input }),
+
+    toggleInputField: () =>
+      set((state) => ({ showInputField: !state.showInputField })),
+
+    runCode: async (userInput?: string) => {
       const { language, getCode } = get();
       const code = getCode();
 
@@ -82,77 +93,63 @@ export const useCodeEditorStore = create<CodeEditorState>((set, get) => {
 
       set({ isRunning: true, error: null, output: "" });
 
+      let response: Response | null = null; // Define response variable
+
       try {
-        const runtime = LANGUAGE_CONFIG[language].pistonRuntime;
-        const response = await fetch("https://emkc.org/api/v2/piston/execute", {
+        response = await fetch("/api/code-executions", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            language: runtime.language,
-            version: runtime.version,
-            files: [{ content: code }],
+            language,
+            code,
+            input: userInput || "",
           }),
         });
 
+        // Check for specific auth error first
+        if (response.status === 401) {
+          throw new Error(
+            "Authentication failed. Please sign in again or refresh the page."
+          );
+        }
+
+        if (!response.ok) {
+          const errorData = await response
+            .json()
+            .catch(() => ({ message: "Code execution failed" }));
+          // Use a generic message but include status for debugging
+          throw new Error(
+            errorData.message || `Execution failed (Status: ${response.status})`
+          );
+        }
+
         const data = await response.json();
 
-        console.log("data back from piston:", data);
-
-        // handle API-level erros
-        if (data.message) {
-          set({
-            error: data.message,
-            executionResult: { code, output: "", error: data.message },
-          });
-          return;
-        }
-
-        // handle compilation errors
-        if (data.compile && data.compile.code !== 0) {
-          const error = data.compile.stderr || data.compile.output;
-          set({
-            error,
-            executionResult: {
-              code,
-              output: "",
-              error,
-            },
-          });
-          return;
-        }
-
-        if (data.run && data.run.code !== 0) {
-          const error = data.run.stderr || data.run.output;
-          set({
-            error,
-            executionResult: {
-              code,
-              output: "",
-              error,
-            },
-          });
-          return;
-        }
-
-        // if we get here, execution was successful
-        const output = data.run.output;
-
         set({
-          output: output.trim(),
-          error: null,
+          output: data.output?.trim() ?? "",
+          error: data.error || null,
           executionResult: {
             code,
-            output: output.trim(),
-            error: null,
+            input: userInput || "",
+            output: data.output?.trim() ?? "",
+            error: data.error || null,
           },
         });
       } catch (error) {
-        console.log("Error running code:", error);
+        console.error("Error running code:", error);
+        const message =
+          error instanceof Error ? error.message : "An unknown error occurred";
         set({
-          error: "Error running code",
-          executionResult: { code, output: "", error: "Error running code" },
+          error: message,
+          // Ensure executionResult is set even on error, possibly with the error message
+          executionResult: {
+            code,
+            input: userInput || "",
+            output: "",
+            error: message,
+          },
         });
       } finally {
         set({ isRunning: false });

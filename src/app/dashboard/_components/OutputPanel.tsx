@@ -7,21 +7,36 @@ import {
   Clock,
   Copy,
   Terminal,
+  Keyboard as KeyboardIcon,
 } from "lucide-react";
 import { useState } from "react";
 import RunningCodeSkeleton from "./RunningCodeSkeleton";
 
 function OutputPanel() {
-  const { output, error, isRunning } = useCodeEditorStore();
+  const {
+    output,
+    error,
+    isRunning,
+    userInput,
+    setUserInput,
+    showInputField,
+    toggleInputField,
+  } = useCodeEditorStore();
   const [isCopied, setIsCopied] = useState(false);
 
   const hasContent = error || output;
 
+  const formatOutputForDisplay = () => {
+    if (!output) return "";
+    if (!userInput) return output;
+    return `--- Input Provided ---\n${userInput}\n--- Output ---\n${output}`;
+  };
+  const formattedOutput = formatOutputForDisplay();
+
   const handleCopy = async () => {
     if (!hasContent) return;
-    await navigator.clipboard.writeText(error || output);
+    await navigator.clipboard.writeText(error || formattedOutput);
     setIsCopied(true);
-
     setTimeout(() => setIsCopied(false), 2000);
   };
 
@@ -36,32 +51,64 @@ function OutputPanel() {
           <span className="text-sm font-medium text-gray-300">Output</span>
         </div>
 
-        {hasContent && (
+        <div className="flex items-center gap-2">
           <button
-            onClick={handleCopy}
+            onClick={toggleInputField}
             className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs text-gray-400 hover:text-gray-300 bg-[#1e1e2e] 
             rounded-lg ring-1 ring-gray-800/50 hover:ring-gray-700/50 transition-all"
+            title={showInputField ? "Hide user input field" : "Show user input field"}
           >
-            {isCopied ? (
-              <>
-                <CheckCircle className="w-3.5 h-3.5" />
-                Copied!
-              </>
-            ) : (
-              <>
-                <Copy className="w-3.5 h-3.5" />
-                Copy
-              </>
-            )}
+            <KeyboardIcon className="w-3.5 h-3.5" />
+            {showInputField ? "Hide Input" : "Show Input"}
           </button>
-        )}
+
+          {hasContent && (
+            <button
+              onClick={handleCopy}
+              className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs text-gray-400 hover:text-gray-300 bg-[#1e1e2e] 
+              rounded-lg ring-1 ring-gray-800/50 hover:ring-gray-700/50 transition-all"
+              title="Copy output to clipboard"
+            >
+              {isCopied ? (
+                <>
+                  <CheckCircle className="w-3.5 h-3.5" />
+                  Copied!
+                </>
+              ) : (
+                <>
+                  <Copy className="w-3.5 h-3.5" />
+                  Copy
+                </>
+              )}
+            </button>
+          )}
+        </div>
       </div>
+
+      {/* User Input Field (Conditional) */}
+      {showInputField && (
+        <div className="mb-4">
+          <label className="flex items-center gap-2 mb-2 text-sm font-medium text-gray-300">
+            <KeyboardIcon className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+            User Input
+          </label>
+          <textarea
+            value={userInput}
+            onChange={(e) => setUserInput(e.target.value)}
+            placeholder="Enter input required by your code..."
+            className="w-full bg-[#1e1e2e]/50 backdrop-blur-sm border border-[#313244] 
+            rounded-xl p-3 h-[100px] font-mono text-sm text-gray-300 resize-none focus:outline-none focus:ring-1 focus:ring-blue-500"
+            spellCheck="false"
+            disabled={isRunning}
+          />
+        </div>
+      )}
 
       {/* Output Area */}
       <div className="relative">
         <div
           className="relative bg-[#1e1e2e]/50 backdrop-blur-sm border border-[#313244] 
-        rounded-xl p-4 h-[600px] overflow-auto font-mono text-sm"
+          rounded-xl p-4 h-[600px] overflow-auto font-mono text-sm"
         >
           {isRunning ? (
             <RunningCodeSkeleton />
@@ -81,7 +128,7 @@ function OutputPanel() {
                 <CheckCircle className="w-5 h-5" />
                 <span className="font-medium">Execution Successful</span>
               </div>
-              <pre className="whitespace-pre-wrap text-gray-300">{output}</pre>
+              <pre className="whitespace-pre-wrap text-gray-300">{formattedOutput}</pre>
             </div>
           ) : (
             <div className="h-full flex flex-col items-center justify-center text-gray-500">

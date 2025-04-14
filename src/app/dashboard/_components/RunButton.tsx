@@ -11,11 +11,11 @@ import { useCodeExecutionsApi } from "@/hooks/useCodeExecutionsApi";
 
 function RunButton() {
   const { user } = useUser();
-  const { runCode, language, isRunning } = useCodeEditorStore();
+  const { runCode, language, isRunning, userInput } = useCodeEditorStore();
   const { saveExecution } = useCodeExecutionsApi();
 
   const handleRun = async () => {
-    await runCode();
+    await runCode(userInput);
     const result = getExecutionResult();
 
     if (user && result) {
