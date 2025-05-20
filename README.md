@@ -49,7 +49,7 @@
 
 ## 🧑‍💻 Developed By
 
-**Your Name**  
+**Rudrakshi**  
 📧 rudrakshisharma86@gmail.com  
 🔗 [GitHub](https://github.com/itsrudra143) 
 
