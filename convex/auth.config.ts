@@ -1,7 +1,7 @@
 export default {
   providers: [
     {
-      domain: "https://fluent-cow-77.clerk.accounts.dev/",
+      domain: `${process.env.CONVEX_SITE_URL}`,
       applicationID: "convex",
     },
   ],
